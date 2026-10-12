@@ -57,6 +57,19 @@ class Emitter:
         elif node.kind in ('let', 'var'):
             value = self.expression(node.children[0])
             self.line(f'{self.CTYPES[node.type]} v_{node.value} = {value};')
+        elif node.kind == 'if':
+            condition = self.expression(node.children[0])
+            self.line(f'if ({condition}) {{')
+            self.block(node.children[1])
+            self.line('}')
+            if node.children[2]:
+                self.line('else {')
+                other = node.children[2]
+                if other.kind == 'block':
+                    self.block(other)
+                else:
+                    self.statement(other)
+                self.line('}')
         else:
             raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {node.kind}')
 
@@ -77,15 +90,27 @@ class Emitter:
         if k == 'binary':
             left, right = [self.expression(c) for c in node.children]
             names = {'+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '%': 'rem'}
-            code = f'rt_{names[node.value]}({left}, {right}, {self.location(node)})'
+            if node.value in names:
+                code = f'rt_{names[node.value]}({left}, {right}, {self.location(node)})'
+            elif node.children[0].type == 'text':
+                code = f'(strcmp({left}, {right}) {node.value} 0)'
+            else:
+                code = f'({left} {node.value} {right})' 
         elif k == 'unary':
             child = self.expression(node.children[0])
-            code = f'rt_sub(0, {child}, {self.location(node)})'
+            code = f'(!{child})' if node.value == '!' else f'rt_sub(0, {child}, {self.location(node)})'
         elif k == 'call' and node.value == 'print':
             child = node.children[0]
             value = self.expression(child)
             self.line(f'rt_print_{child.type}({value}, {self.location(node)});')
             return ''
+        elif k == 'call':
+            args = [self.expression(c) for c in node.children]
+            args.append(self.location(node))
+            code = f'f_{node.value}({", ".join(args)})'
+            if node.type == 'void':
+                self.line(code + ';')
+                return ''
         else:
             raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {k}')
         name = self.temporary()
