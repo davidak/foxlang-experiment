@@ -1,0 +1,12 @@
+{
+  "compiler/__init__.py": "23b28a43043f97deb92b603c5a5fdcb60d34a4f9ace772d6dc1e818f35f74ada",
+  "compiler/backend.py": "66bd8f28cd33fef8b3ba9df16eab76706f135e721523d1d830e16972ea7a3ce1",
+  "compiler/frontend.py": "70d13e941b582a8914ced924ac29da58d040e94db71ab60535ffed2ec9eeb4da",
+  "compiler/runtime.c": "a41bbfe370afb36cf3d153d0f5b8b37f06c280c9fd825d9fc0306f1debff87e5",
+  "compiler/semantics.py": "0d667ce62497330ea06a27e0d1d16fbb56779901ddb04bd966e9adb5cfd2487f",
+  "docs/language.md": "e3e26d3a40efaf9751f9d9402af33470872a9da505cc2fcbf6880be83ae3f0bd",
+  "docs/stdlib.md": "9ee433b36f42d8a6a74570bb5d6915511f15a652386eacd66e394208b97d9b2a",
+  "docs/testing.md": "4c6c09584955bfb4d1e128ef0357c96479d17831801c5f0a6dbefebce4f7b563",
+  "fox.py": "61080b6ac1fed832c2bae989e7daef22a6bc43bd75200195495afca0d560ed1a",
+  "stdlib/testing.fox": "639b4cb047f3cf7ded1a6487fb32e06dac621845e14592eaddd6bce8d59fee13"
+}
