@@ -112,6 +112,19 @@ and [final technical report](docs/report.md). Verification passes 111 external
 tests and 37 normal native tests, with zero unexpected failures. All nine
 program outputs pass exact-byte comparisons in the pinned Nix shell.
 
+## Coding agent usage
+
+The coding agent ran for 25 minutes. Its reported token usage was:
+
+| Measure | Tokens |
+| --- | ---: |
+| Input | 2,855,191 |
+| Cached input (included in input) | 2,770,048 |
+| Cache write input | 0 |
+| Output | 47,239 |
+| Reasoning output (included in output) | 8,254 |
+| Total | 2,902,430 |
+
 ## Limitations and next experiment
 
 Single source files; no imports, floats, structs, mutable/dynamic collections,
