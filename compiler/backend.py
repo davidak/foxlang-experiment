@@ -57,6 +57,9 @@ class Emitter:
         elif node.kind in ('let', 'var'):
             value = self.expression(node.children[0])
             self.line(f'{self.CTYPES[node.type]} v_{node.value} = {value};')
+        elif node.kind == 'return':
+            value = self.expression(node.children[0]) if node.children else ''
+            self.line(f'return {value};')
         elif node.kind == 'assign':
             value = self.expression(node.children[0])
             self.line(f'v_{node.value} = {value};')
