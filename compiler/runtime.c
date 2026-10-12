@@ -57,3 +57,8 @@ static int64_t rt_rem(int64_t a, int64_t b, const char *loc) {
     rt_divisor(a, b, loc);
     return a % b;
 }
+
+static int64_t rt_index(int64_t index, int64_t length, const char *loc) {
+    if (index < 0 || index >= length) rt_error(loc, "R003", "array index outside bounds");
+    return index;
+}

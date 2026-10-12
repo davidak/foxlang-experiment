@@ -56,7 +56,8 @@ class Emitter:
             self.expression(node.children[0])
         elif node.kind in ('let', 'var'):
             value = self.expression(node.children[0])
-            self.line(f'{self.CTYPES[node.type]} v_{node.value} = {value};')
+            ctype = 'const int64_t *' if isinstance(node.type, tuple) else self.CTYPES[node.type]
+            self.line(f'{ctype} v_{node.value} = {value};')
         elif node.kind == 'return':
             value = self.expression(node.children[0]) if node.children else ''
             self.line(f'return {value};')
@@ -96,8 +97,22 @@ class Emitter:
                 return 'INT64_MIN'
             return f'INT64_C({node.value})'
         if k == 'name':
+            if isinstance(node.type, tuple):
+                return f'v_{node.value}'
             name = self.temporary()
             self.line(f'{self.CTYPES[node.type]} {name} = v_{node.value};')
+            return name
+        if k == 'array':
+            values = [self.expression(c) for c in node.children]
+            name = self.temporary()
+            self.line(f'const int64_t {name}[] = {{{", ".join(values)}}};')
+            return name
+        if k == 'index':
+            base = self.expression(node.children[0])
+            index = self.expression(node.children[1])
+            length = node.children[0].type[1]
+            name = self.temporary()
+            self.line(f'int64_t {name} = {base}[rt_index({index}, {length}, {self.location(node)})];')
             return name
         if k == 'binary' and node.value in ('&&', '||'):
             left = self.expression(node.children[0])
@@ -126,6 +141,9 @@ class Emitter:
             value = self.expression(child)
             self.line(f'rt_print_{child.type}({value}, {self.location(node)});')
             return ''
+        elif k == 'call' and node.value == 'len':
+            self.expression(node.children[0])
+            return f'INT64_C({node.children[0].type[1]})'
         elif k == 'call':
             args = [self.expression(c) for c in node.children]
             args.append(self.location(node))
