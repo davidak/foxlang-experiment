@@ -28,12 +28,16 @@ class Framework(unittest.TestCase):
         self.assertEqual((result.returncode, result.stdout, result.stderr), (0, b'PASS all assertion forms\n1 passed; 0 failed\n', b''))
 
     def test_stdlib(self):
-        result = self.run_fox(ROOT/'tests/native/stdlib.fox', input=b' \t-12\n')
-        expected = ('PASS read_int representative signed input\n'
-                    '9223372036854775807\n-9223372036854775808\ntrue\nfalse\nfox 🦊\n\n'
+        result = self.run_fox(ROOT/'tests/native/stdlib.fox')
+        expected = ('9223372036854775807\n-9223372036854775808\ntrue\nfalse\nfox 🦊\n\n'
                     'PASS print every scalar type and empty text\n'
                     'PASS len single and multiple elements\n'
-                    'PASS assertion library scalar overloads\n4 passed; 0 failed\n').encode()
+                    'PASS assertion library scalar overloads\n3 passed; 0 failed\n').encode()
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, expected, b''))
+
+    def test_read_int(self):
+        result = self.run_fox(ROOT/'tests/framework/read_int.fox', input=b' \t-12\n')
+        expected = b'PASS read_int representative signed input\n1 passed; 0 failed\n'
         self.assertEqual((result.returncode, result.stdout, result.stderr), (0, expected, b''))
 
     def test_mixed(self):

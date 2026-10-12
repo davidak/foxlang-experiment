@@ -1,0 +1,4 @@
+// The external harness supplies stdin for this integration test.
+test "read_int representative signed input" {
+    assert_eq(read_int(), -12);
+}

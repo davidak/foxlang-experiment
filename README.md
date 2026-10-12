@@ -41,7 +41,7 @@ printf '12\n' | ./build/square
 python3 tests/examples.py
 python3 -m unittest discover -s tests -v
 python3 fox.py test tests/native/language.fox
-printf '%s\n' '-12' | python3 fox.py test tests/native/stdlib.fox
+python3 fox.py test tests/native/stdlib.fox
 python3 fox.py test examples/05-gcd/main.fox
 python3 fox.py build examples/09-primes/primes.fox -o build/primes
 ./build/primes
@@ -52,6 +52,8 @@ The full external suite compiles and runs every initial example, tests invalid
 source and runtime failures, runs native feature/library tests, and independently
 checks intentionally failing framework fixtures. Expected fixture failures are
 successful external tests; they do not mean the verification suite failed.
+The native standard-library suite needs no stdin. The external suite supplies
+input automatically for the separate `read_int()` integration fixture.
 
 The compiler writes C beside the requested executable (`build/hello.c` above).
 Build artifacts and caches are ignored by Git. Without `-o`, output defaults to
@@ -94,7 +96,7 @@ in the one named file. See [testing](docs/testing.md) for details.
 | `examples/09-primes/` | Fresh-agent prime specification, prewritten native tests and implementation |
 | `tests/invalid/` | Invalid sources and expected diagnostic identifiers/locations |
 | `tests/native/` | Native language and standard-library tests |
-| `tests/framework/` | Deliberately failing and empty runner fixtures |
+| `tests/framework/` | Runner fixtures, including deliberate failures and input integration |
 | `tests/test_*.py` | Independent black-box verification |
 | `docs/` | Reference, API, testing guide, development record, evaluation and ADRs |
 | `build/` | Ignored generated C, executables and verification output |
@@ -106,7 +108,7 @@ Square Calculator. Each directory has a `spec.md` and exact `expected.txt`.
 The ninth program prints primes from 2 through 30. A fresh agent wrote its
 specification and 13 tests before its solution, using the frozen documentation
 and compiler without language changes. See the [independent evaluation](docs/evaluation.md)
-and [final technical report](docs/report.md). Verification passes 110 external
+and [final technical report](docs/report.md). Verification passes 111 external
 tests and 37 normal native tests, with zero unexpected failures. All nine
 program outputs pass exact-byte comparisons in the pinned Nix shell.
 

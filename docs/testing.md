@@ -36,8 +36,16 @@ zero discovered tests; exit 1 means assertions failed (or compilation failed,
 which is distinguished by an error identifier). Fatal runtime errors exit 2
 without a summary. CLI usage errors also exit 2.
 
-`tests/native/language.fox` has 16 feature tests; `stdlib.fox` has four API tests
-and consumes `-12` from stdin. `smoke.fox` tests the assertion API minimally.
+`tests/native/language.fox` has 16 feature tests; `stdlib.fox` has three API tests
+and needs no stdin. Run it directly:
+
+```sh
+python3 fox.py test tests/native/stdlib.fox
+```
+
+The external harness supplies `-12` with surrounding whitespace to the separate
+`tests/framework/read_int.fox` integration fixture automatically. Run the full
+independent suite to include this check. `smoke.fox` tests the assertion API minimally.
 GCD and Fibonacci carry their own contract tests. Negative library/runtime
 behavior is covered externally because a fatal error cannot be caught in
 FoxLang. The mixed framework fixture has two passing and ten failing tests;

@@ -6,7 +6,7 @@
   "compiler/semantics.py": "0d667ce62497330ea06a27e0d1d16fbb56779901ddb04bd966e9adb5cfd2487f",
   "docs/language.md": "e3e26d3a40efaf9751f9d9402af33470872a9da505cc2fcbf6880be83ae3f0bd",
   "docs/stdlib.md": "9ee433b36f42d8a6a74570bb5d6915511f15a652386eacd66e394208b97d9b2a",
-  "docs/testing.md": "4c6c09584955bfb4d1e128ef0357c96479d17831801c5f0a6dbefebce4f7b563",
+  "docs/evaluation/testing.md": "4c6c09584955bfb4d1e128ef0357c96479d17831801c5f0a6dbefebce4f7b563",
   "fox.py": "61080b6ac1fed832c2bae989e7daef22a6bc43bd75200195495afca0d560ed1a",
   "stdlib/testing.fox": "639b4cb047f3cf7ded1a6487fb32e06dac621845e14592eaddd6bce8d59fee13"
 }

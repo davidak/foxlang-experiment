@@ -110,3 +110,13 @@ suite and compiler implementation were not independently inspected or rerun.
 No compiler, runtime, library, framework or reference-document changes were
 needed. The only delivered source changes are the new prime example and this
 evaluation report; verification artifacts are confined to `build/independent`.
+
+## Subsequent maintenance
+
+The standard-library native suite now runs without stdin. Its input-dependent
+`read_int()` check moved to an integration fixture supplied with input by the
+external Python harness. The current `docs/testing.md` describes that workflow.
+The testing guide used during the original evaluation is preserved verbatim in
+`docs/evaluation/testing.md`; the freeze manifest now checks that snapshot using
+the original hash. All other manifest entries remain unchanged. This maintenance
+does not constitute a new independent evaluation.
