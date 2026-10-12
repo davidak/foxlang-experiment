@@ -1,5 +1,4 @@
 """C emission. Expression temporaries preserve FoxLang evaluation order."""
-import json
 from .frontend import Diagnostic
 
 
@@ -55,14 +54,40 @@ class Emitter:
     def statement(self, node):
         if node.kind == 'expr':
             self.expression(node.children[0])
+        elif node.kind in ('let', 'var'):
+            value = self.expression(node.children[0])
+            self.line(f'{self.CTYPES[node.type]} v_{node.value} = {value};')
         else:
             raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {node.kind}')
 
     def expression(self, node):
-        if node.kind == 'literal' and node.type == 'text':
-            return cstring(node.value)
-        if node.kind == 'call' and node.value == 'print' and node.children[0].type == 'text':
-            value = self.expression(node.children[0])
-            self.line(f'rt_print_text({value}, {self.location(node)});')
+        k = node.kind
+        if k == 'literal':
+            if node.type == 'text':
+                return cstring(node.value)
+            if node.type == 'bool':
+                return node.value
+            if node.value == -9223372036854775808:
+                return 'INT64_MIN'
+            return f'INT64_C({node.value})'
+        if k == 'name':
+            name = self.temporary()
+            self.line(f'{self.CTYPES[node.type]} {name} = v_{node.value};')
+            return name
+        if k == 'binary':
+            left, right = [self.expression(c) for c in node.children]
+            names = {'+': 'add', '-': 'sub', '*': 'mul', '/': 'div', '%': 'rem'}
+            code = f'rt_{names[node.value]}({left}, {right}, {self.location(node)})'
+        elif k == 'unary':
+            child = self.expression(node.children[0])
+            code = f'rt_sub(0, {child}, {self.location(node)})'
+        elif k == 'call' and node.value == 'print':
+            child = node.children[0]
+            value = self.expression(child)
+            self.line(f'rt_print_{child.type}({value}, {self.location(node)});')
             return ''
-        raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {node.kind}')
+        else:
+            raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {k}')
+        name = self.temporary()
+        self.line(f'{self.CTYPES[node.type]} {name} = {code};')
+        return name
