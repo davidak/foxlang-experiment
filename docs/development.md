@@ -25,3 +25,12 @@ separate Git metadata at `/tmp/foxlang-git-history`; a final portable Git bundle
 will preserve the full history. Standard Git commands in this workspace cannot
 work until writable metadata is available. Nix initially cannot access its
 daemon socket in the sandbox. Cached store tools are being investigated.
+
+## Phase 3 review
+
+All eight implementations were written before compiler development and checked
+against the reference: locals initialize before use; parameters stay immutable;
+result functions return on all paths; conditions are bool; collection elements
+are int; square delegates strict parsing and arithmetic safety to the runtime.
+No language additions were needed. Examples are committed as executable
+requirements, with no compiler yet present.
