@@ -109,7 +109,7 @@ class Emitter:
                     self.statement(other)
                 self.line('}')
         else:
-            raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {node.kind}')
+            raise Diagnostic(node.token, 'E900', f'internal compiler error: unsupported statement {node.kind}')
 
     def expression(self, node):
         k = node.kind
@@ -157,7 +157,7 @@ class Emitter:
             elif node.children[0].type == 'text':
                 code = f'(strcmp({left}, {right}) {node.value} 0)'
             else:
-                code = f'({left} {node.value} {right})' 
+                code = f'({left} {node.value} {right})'
         elif k == 'unary':
             child = self.expression(node.children[0])
             code = f'(!{child})' if node.value == '!' else f'rt_sub(0, {child}, {self.location(node)})'
@@ -187,7 +187,7 @@ class Emitter:
                 self.line(code + ';')
                 return ''
         else:
-            raise Diagnostic(node.token, 'E900', f'compiler milestone does not yet emit {k}')
+            raise Diagnostic(node.token, 'E900', f'internal compiler error: unsupported expression {k}')
         name = self.temporary()
         self.line(f'{self.CTYPES[node.type]} {name} = {code};')
         return name

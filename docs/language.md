@@ -56,10 +56,10 @@ parameter  = IDENT ":" scalar ;
 scalar     = "int" | "bool" | "text" ;
 test       = "test" STRING block ;
 block      = "{" { statement } "}" ;
+if-stmt    = "if" expression block [ "else" (block | if-stmt) ] ;
 statement  = ("let" | "var") IDENT "=" expression ";"
            | IDENT "=" expression ";"
-           | "if" expression block [ "else" (block | "if" expression block
-             [ "else" block ]) ]
+           | if-stmt
            | "while" expression block
            | "return" [ expression ] ";"
            | expression ";" ;
@@ -78,16 +78,15 @@ primary    = INT | STRING | "true" | "false" | IDENT
            | "[" expression { "," expression } "]" ;
 ```
 
-The `else if` production above is shorthand for arbitrarily repeated else-if
-clauses: each `else` may contain another `if` statement. Calls name functions
+Calls name functions
 directly; functions are not values. Only function calls can be expression
 statements. Trailing commas are not accepted.
 
 ## Values, bindings, functions and control flow
 
 `int` is signed 64-bit, range -9223372036854775808 through 9223372036854775807.
-The negative minimum literal is accepted as unary minus immediately followed
-by 9223372036854775808. That positive magnitude is otherwise invalid.
+The negative minimum literal is accepted when unary minus applies directly to
+the literal 9223372036854775808 (parentheses around the literal are allowed). That positive magnitude is otherwise invalid.
 `bool` has exactly `true` and `false`. `text` is immutable; no concatenation,
 indexing or conversion is provided. It can be passed and returned by functions.
 
@@ -98,7 +97,7 @@ an error. Names of functions and standard functions cannot be local bindings.
 Function and test names are independently unique. Parameters are immutable.
 Functions can call later declarations, themselves, and each other. Arguments
 and results are scalar values. Omitting `->` means no result (void); void is
-not a value or a source type. Return expressions must match the result type.
+not a value or a source type. Return expressions must be scalar values matching the result type.
 Every path through a result-bearing function must return. For conservative
 analysis, a loop may execute zero times even with a literal true condition.
 Statements after a definitely returning statement are rejected. Void functions

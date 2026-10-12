@@ -198,5 +198,44 @@ for name, expression, code in [
     ('negative_index', '[1][-1]', 'R003'), ('large_index', '[1][1]', 'R003')]:
     setattr(External, 'test_runtime_'+name, runtime_test(expression, code))
 
+
+# Additional regressions found during the pre-evaluation review.
+class DriverErrors(unittest.TestCase):
+    def test_output_directory_diagnostic(self):
+        ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(ROOT/'examples/01-hello/main.fox'), '-o', str(ROOT/'build')], capture_output=True)
+        self.assertEqual(ran.returncode, 1)
+        self.assertIn(b'E900', ran.stderr)
+        self.assertNotIn(b'Traceback', ran.stderr)
+
+    def test_missing_main_location(self):
+        path = ROOT/'build/no-main.fox'
+        path.write_text('fn helper() {}')
+        ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(path)], capture_output=True)
+        self.assertEqual(ran.returncode, 1)
+        self.assertTrue(ran.stderr.startswith(f'{path}:1:1: error[E107]'.encode()), ran.stderr)
+
+    def test_void_return_value(self):
+        path = ROOT/'build/void-return.fox'
+        path.write_text('fn main() { return print(1); }')
+        ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(path)], capture_output=True)
+        self.assertEqual(ran.returncode, 1)
+        self.assertIn(b':1:13: error[E102]', ran.stderr)
+
+    def test_unicode_and_crlf_diagnostic_location(self):
+        path = ROOT/'build/unicode-location.fox'
+        path.write_bytes('fn main() {\r\n\tprint("🦊"); print(unknown);\r\n}'.encode())
+        ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(path)], capture_output=True)
+        self.assertEqual(ran.returncode, 1)
+        self.assertIn(b':2:20: error[E100]', ran.stderr)
+
+    def test_large_literal_has_diagnostic(self):
+        path = ROOT/'build/large-literal.fox'
+        path.write_text('fn main() { print('+'9'*10000+'); }')
+        ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(path)], capture_output=True)
+        self.assertEqual(ran.returncode, 1)
+        self.assertIn(b'E108', ran.stderr)
+        self.assertNotIn(b'Traceback', ran.stderr)
+
+
 if __name__ == '__main__':
     unittest.main()

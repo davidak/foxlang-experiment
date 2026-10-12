@@ -6,10 +6,11 @@ SCALARS = ('int', 'bool', 'text')
 
 
 class Checker:
-    def __init__(self, nodes, test_mode=False):
+    def __init__(self, nodes, test_mode=False, source_token=None):
         self.nodes = nodes
         self.functions = {}
         self.test_mode = test_mode
+        self.source_token = source_token
 
     def error(self, node, code, message, hint=None):
         raise Diagnostic(node.token, code, message, hint)
@@ -35,7 +36,7 @@ class Checker:
         if main and (main.type != 'void' or main.children[0]):
             self.error(main, 'E107', 'main must have no parameters and no result', 'Declare fn main() { ... }.')
         if not self.test_mode and not main:
-            token = self.nodes[0].token if self.nodes else Token('', '', '<source>', 1, 1)
+            token = self.source_token or (self.nodes[0].token if self.nodes else Token('', '', '<source>', 1, 1))
             raise Diagnostic(token, 'E107', 'normal build requires fn main()', 'Add fn main() { ... } or use test mode.')
         for node in self.nodes:
             env = {}
@@ -93,6 +94,8 @@ class Checker:
             if result == 'test':
                 self.error(node, 'E105', 'return is forbidden inside a test')
             actual = self.expression(node.children[0], env) if node.children else 'void'
+            if node.children and actual == 'void':
+                self.error(node, 'E102', 'a void call cannot be a return value', 'Use the call as a statement followed by return;.')
             self.require(node, actual, result)
             return True
         elif k in ('if', 'while'):

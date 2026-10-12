@@ -45,3 +45,33 @@ reran every preceding example with byte-for-byte output comparison.
 Recursive Fibonacci then passed without compiler changes: function prototypes
 and general call emission already support recursion. All six examples pass.
 Native builds use cached Nix GCC 15.2.0; no ad-hoc compiler installation.
+
+## Phases 4–6 review
+
+All eight native executables match their exact output fixtures. Arrays/indexing
+and strict streaming input completed the compiler milestones. The independent
+harness initially passed 90 tests, including 40 invalid-source fixtures,
+arithmetic checked against 250 Python computations, sequencing, short circuit,
+mutual recursion, square boundaries and host I/O errors.
+
+Native implementation separates declarations and discovery in the compiler,
+assertion reporting/control transfer in C, and reusable bool/failure policy in
+FoxLang. Expanded verification passes 107 Python tests and 24 native tests in
+the feature/API/application suites. Ten deliberate failures in the mixed runner
+fixture are all observed correctly, including the wrapper call locations.
+Review tightened void-return checking, fixed missing-main source locations and
+ensured directory output errors cannot escape as Python tracebacks. Added
+regressions for those issues and Unicode/CRLF diagnostic columns.
+
+The first Nix attempts using the host channel or direct local store failed on
+sandbox permissions. The pinned shell subsequently resolved its cached closure
+and successfully ran Python 3.13.15 and GCC 15.2.0 using `nix-shell --pure`.
+The full suite is being verified under that exact shell before evaluation.
+
+`nix-shell --pure --run 'python3 -m unittest discover -s tests -v'`
+completed successfully: 107 tests, 0 failures, 11.180 seconds. The shell archive
+pin and hash resolved successfully. Shell invocations wrapped with outer output
+redirection encountered sandbox store restrictions; invoking the documented
+command directly succeeded. This is an environment constraint, not a language
+change. The compiler, runtime, standard library and their tests are now frozen
+for the fresh-context ninth-program evaluation.
