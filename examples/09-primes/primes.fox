@@ -1,0 +1,79 @@
+test "negative integers are not prime" {
+    assert_false(is_prime(-9223372036854775808));
+    assert_false(is_prime(-30));
+    assert_false(is_prime(-3));
+    assert_false(is_prime(-2));
+    assert_false(is_prime(-1));
+}
+
+test "zero is not prime" {
+    assert_false(is_prime(0));
+}
+
+test "one is not prime" {
+    assert_false(is_prime(1));
+}
+
+test "two is the smallest prime" {
+    assert_true(is_prime(2));
+}
+
+test "three is the smallest odd prime" {
+    assert_true(is_prime(3));
+}
+
+test "even composites through thirty" {
+    var candidate = 4;
+    while candidate <= 30 {
+        assert_false(is_prime(candidate));
+        candidate = candidate + 2;
+    }
+}
+
+test "odd nonsquare composites" {
+    assert_false(is_prime(15));
+    assert_false(is_prime(21));
+    assert_false(is_prime(27));
+}
+
+test "prime squares include the divisor boundary" {
+    assert_false(is_prime(4));
+    assert_false(is_prime(9));
+    assert_false(is_prime(25));
+    assert_false(is_prime(49));
+    assert_false(is_prime(121));
+}
+
+test "all primes from two through thirty" {
+    let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+    var index = 0;
+    while index < len(primes) {
+        assert_true(is_prime(primes[index]));
+        index = index + 1;
+    }
+}
+
+test "upper interval boundary and neighbors" {
+    assert_false(is_prime(28));
+    assert_true(is_prime(29));
+    assert_false(is_prime(30));
+    assert_true(is_prime(31));
+    assert_false(is_prime(32));
+}
+
+test "larger primes" {
+    assert_true(is_prime(97));
+    assert_true(is_prime(997));
+    assert_true(is_prime(2147483647));
+}
+
+test "larger composites" {
+    assert_false(is_prime(99));
+    assert_false(is_prime(1001));
+    assert_false(is_prime(2147483646));
+}
+
+test "signed integer upper endpoints are composite" {
+    assert_false(is_prime(9223372036854775806));
+    assert_false(is_prime(9223372036854775807));
+}
