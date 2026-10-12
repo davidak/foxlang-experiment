@@ -141,6 +141,8 @@ class Emitter:
             value = self.expression(child)
             self.line(f'rt_print_{child.type}({value}, {self.location(node)});')
             return ''
+        elif k == 'call' and node.value == 'read_int':
+            code = f'rt_read_int({self.location(node)})'
         elif k == 'call' and node.value == 'len':
             self.expression(node.children[0])
             return f'INT64_C({node.children[0].type[1]})'

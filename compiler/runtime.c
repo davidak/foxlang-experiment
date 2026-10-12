@@ -62,3 +62,32 @@ static int64_t rt_index(int64_t index, int64_t length, const char *loc) {
     if (index < 0 || index >= length) rt_error(loc, "R003", "array index outside bounds");
     return index;
 }
+
+static bool rt_space(int c) {
+    return c == ' ' || c == '\t' || c == '\r' || c == '\n' || c == '\v' || c == '\f';
+}
+
+static int64_t rt_read_int(const char *loc) {
+    /* Streaming conversion: constant memory, no locale or permissive strtol. */
+    int c;
+    do { c = getchar(); } while (rt_space(c));
+    bool negative = c == '-';
+    if (c == '-' || c == '+') c = getchar();
+    uint64_t limit = negative ? UINT64_C(9223372036854775808) : INT64_MAX;
+    uint64_t value = 0;
+    bool digits = false;
+    while (c >= '0' && c <= '9') {
+        digits = true;
+        unsigned digit = (unsigned)(c - '0');
+        if (value > (limit - digit) / 10)
+            rt_error(loc, "R004", "input integer outside signed 64-bit range");
+        value = value * 10 + digit;
+        c = getchar();
+    }
+    while (rt_space(c)) c = getchar();
+    if (ferror(stdin)) rt_error(loc, "R005", "could not read standard input");
+    if (!digits || c != EOF)
+        rt_error(loc, "R004", "expected exactly one signed decimal integer before EOF");
+    if (negative && value == UINT64_C(9223372036854775808)) return INT64_MIN;
+    return negative ? -(int64_t)value : (int64_t)value;
+}
