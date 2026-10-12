@@ -1,0 +1,6 @@
+negative
+odd
+zero
+even
+positive
+even
