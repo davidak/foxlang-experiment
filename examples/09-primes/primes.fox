@@ -77,3 +77,28 @@ test "signed integer upper endpoints are composite" {
     assert_false(is_prime(9223372036854775806));
     assert_false(is_prime(9223372036854775807));
 }
+
+fn is_prime(n: int) -> bool {
+    if n < 2 {
+        return false;
+    }
+    var divisor = 2;
+    // Division avoids overflowing a squared divisor near the integer limit.
+    while divisor <= n / divisor {
+        if n % divisor == 0 {
+            return false;
+        }
+        divisor = divisor + 1;
+    }
+    return true;
+}
+
+fn main() {
+    var candidate = 2;
+    while candidate <= 30 {
+        if is_prime(candidate) {
+            print(candidate);
+        }
+        candidate = candidate + 1;
+    }
+}
