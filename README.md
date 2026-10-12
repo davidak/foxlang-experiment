@@ -123,17 +123,3 @@ Next, specify a small deterministic grid simulation before extending the
 language. Let that program establish whether mutable collections, structured
 values or recoverable input errors are actually needed. Measure correctness
 and development friction before introducing performance work.
-
-## Git history in this execution environment
-
-The supplied root `.git` is empty and read-only. Development uses separate Git
-metadata and exports `foxlang-history.bundle` at completion, containing the
-phase-by-phase commits with the requested Assisted-by trailer. To obtain a
-normal writable checkout, run from this directory:
-
-```sh
-git clone foxlang-history.bundle build/restored
-```
-
-The bundle is a delivery artifact, not a tracked project source file. A normal
-clone has conventional Git metadata and does not need this workaround.
