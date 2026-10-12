@@ -57,6 +57,15 @@ class Emitter:
         elif node.kind in ('let', 'var'):
             value = self.expression(node.children[0])
             self.line(f'{self.CTYPES[node.type]} v_{node.value} = {value};')
+        elif node.kind == 'assign':
+            value = self.expression(node.children[0])
+            self.line(f'v_{node.value} = {value};')
+        elif node.kind == 'while':
+            self.line('while (true) {')
+            condition = self.expression(node.children[0])
+            self.line(f'if (!({condition})) break;')
+            self.block(node.children[1])
+            self.line('}')
         elif node.kind == 'if':
             condition = self.expression(node.children[0])
             self.line(f'if ({condition}) {{')
@@ -86,6 +95,16 @@ class Emitter:
         if k == 'name':
             name = self.temporary()
             self.line(f'{self.CTYPES[node.type]} {name} = v_{node.value};')
+            return name
+        if k == 'binary' and node.value in ('&&', '||'):
+            left = self.expression(node.children[0])
+            name = self.temporary()
+            self.line(f'bool {name} = {left};')
+            condition = name if node.value == '&&' else f'!{name}'
+            self.line(f'if ({condition}) {{')
+            right = self.expression(node.children[1])
+            self.line(f'{name} = {right};')
+            self.line('}')
             return name
         if k == 'binary':
             left, right = [self.expression(c) for c in node.children]
