@@ -1,4 +1,5 @@
 """C emission. Expression temporaries preserve FoxLang evaluation order."""
+from pathlib import Path
 from .frontend import Diagnostic
 
 
@@ -38,13 +39,37 @@ class Emitter:
                 self.line(self.signature(node) + ';')
         for node in self.nodes:
             if node.kind == 'fn':
-                self.library = node.token.path.endswith('/stdlib/testing.fox')
+                self.library = node.token.path == str(Path(__file__).resolve().parents[1] / 'stdlib/testing.fox')
                 self.line(self.signature(node) + ' {')
                 self.block(node.children[1])
                 self.line('}')
+        self.library = False
+        tests = [node for node in self.nodes if node.kind == 'test']
+        if self.test_mode:
+            for i, node in enumerate(tests):
+                self.line(f'static void test_{i}(void) {{')
+                self.block(node.children[0])
+                self.line('}')
         self.line('int main(void) {')
-        self.line('f_main("<entry>");')
-        self.line('return 0;\n}')
+        self.line('rt_start();')
+        if self.test_mode:
+            self.line('static int passed = 0, failed = 0;')
+            for i, node in enumerate(tests):
+                self.line(f'rt_test_name = {cstring(node.value)};')
+                self.line('rt_testing = true;')
+                self.line('if (setjmp(rt_jump) == 0) {')
+                self.line(f'test_{i}();')
+                self.line('passed++; printf("PASS %s\\n", rt_test_name);')
+                self.line('} else {')
+                self.line('failed++; printf("FAIL %s\\n", rt_test_name);')
+                self.line('}')
+            self.line('printf("%d passed; %d failed\\n", passed, failed);')
+            self.line('if (fflush(stdout) == EOF) rt_error("<runner>", "R005", "could not write test results");')
+            self.line('return failed ? 1 : 0;')
+        else:
+            self.line('f_main("<entry>");')
+            self.line('return 0;')
+        self.line('}')
         return '\n'.join(self.lines) + '\n'
 
     def block(self, node):
@@ -140,6 +165,14 @@ class Emitter:
             child = node.children[0]
             value = self.expression(child)
             self.line(f'rt_print_{child.type}({value}, {self.location(node)});')
+            return ''
+        elif k == 'call' and node.value in ('assert', 'assert_eq', 'assert_ne'):
+            args = [self.expression(c) for c in node.children]
+            if node.value == 'assert':
+                self.line(f'rt_assert({args[0]}, {args[1]}, {self.location(node)});')
+            else:
+                equal = 'true' if node.value == 'assert_eq' else 'false'
+                self.line(f'rt_compare_{node.children[0].type}({args[0]}, {args[1]}, {equal}, {self.location(node)});')
             return ''
         elif k == 'call' and node.value == 'read_int':
             code = f'rt_read_int({self.location(node)})'

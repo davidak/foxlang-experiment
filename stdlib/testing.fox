@@ -1,0 +1,12 @@
+// Reusable assertion policy in FoxLang; compiler intrinsics provide reporting.
+fn assert_true(value: bool) {
+    assert(value, "expected true");
+}
+
+fn assert_false(value: bool) {
+    assert(!value, "expected false");
+}
+
+fn fail(message: text) {
+    assert(false, message);
+}

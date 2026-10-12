@@ -91,3 +91,55 @@ static int64_t rt_read_int(const char *loc) {
     if (negative && value == UINT64_C(9223372036854775808)) return INT64_MIN;
     return negative ? -(int64_t)value : (int64_t)value;
 }
+
+#include <setjmp.h>
+#include <signal.h>
+static jmp_buf rt_jump;
+static bool rt_testing = false;
+static const char *rt_test_name = "<program>";
+
+static void rt_start(void) {
+#ifdef SIGPIPE
+    signal(SIGPIPE, SIG_IGN);
+#endif
+}
+
+static void rt_failure_prefix(const char *loc) {
+    fprintf(stderr, "%s: assertion failed in %s: ", loc, rt_test_name);
+}
+
+static void rt_abort_assertion(void) {
+    if (rt_testing) longjmp(rt_jump, 1);
+    exit(1);
+}
+
+static void rt_assert(bool condition, const char *message, const char *loc) {
+    if (condition) return;
+    rt_failure_prefix(loc);
+    fprintf(stderr, "%s\n", message);
+    rt_abort_assertion();
+}
+
+static void rt_compare_int(int64_t actual, int64_t expected, bool equal, const char *loc) {
+    if ((actual == expected) == equal) return;
+    rt_failure_prefix(loc);
+    fprintf(stderr, "expected %s; actual=%" PRId64 ", expected=%" PRId64 "\n",
+        equal ? "equality" : "inequality", actual, expected);
+    rt_abort_assertion();
+}
+
+static void rt_compare_bool(bool actual, bool expected, bool equal, const char *loc) {
+    if ((actual == expected) == equal) return;
+    rt_failure_prefix(loc);
+    fprintf(stderr, "expected %s; actual=%s, expected=%s\n", equal ? "equality" : "inequality",
+        actual ? "true" : "false", expected ? "true" : "false");
+    rt_abort_assertion();
+}
+
+static void rt_compare_text(const char *actual, const char *expected, bool equal, const char *loc) {
+    if ((strcmp(actual, expected) == 0) == equal) return;
+    rt_failure_prefix(loc);
+    fprintf(stderr, "expected %s; actual=\"%s\", expected=\"%s\"\n",
+        equal ? "equality" : "inequality", actual, expected);
+    rt_abort_assertion();
+}
