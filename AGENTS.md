@@ -22,6 +22,8 @@ Before changing behavior, read the relevant specifications and documentation:
 
 Keep the implementation and reference documentation consistent. Document only
 implemented capabilities as available; distinguish plans and known limitations.
+When the user gives a durable preference or workflow instruction for future
+FoxLang work, update this file to record it.
 
 ## Development principles
 
@@ -152,12 +154,12 @@ baseline; do not silently refresh hashes to hide a failed check.
 ## Git and delivery
 
 Use small, focused commits with descriptive messages at completed development
-milestones. Run relevant checks before committing functionality. Include the
-commit attribution specified in the original brief:
-
-```text
-Assisted-by: Codex (GPT-6 Astra High) <noreply@openai.com>
-```
+milestones. Run relevant checks before committing functionality. When Codex
+creates a commit, set its author to `Codex <noreply@openai.com>` for that
+commit only, for example with `git -c user.name=Codex
+-c user.email=noreply@openai.com commit`. Do not change the user's Git
+configuration; commits the user creates manually should continue to use their
+own identity. Do not add a separate `Assisted-by` trailer unless requested.
 
 Keep generated C, executables, caches, and temporary artifacts under `build/`
 and out of version control. Preserve unrelated user changes. Keep the README,
