@@ -66,10 +66,12 @@ was not needed. The independent Python driver
 `build/independent/verify.py` invoked the documented `python3 fox.py test` and
 `python3 fox.py build` commands as subprocesses inside that pure environment.
 It captured bytes, statuses and stderr, and imposed a 30-second timeout on
-each subprocess. Reproduce with:
+each subprocess. That original driver is an ignored development artifact.
+After evaluation, the parent added a permanent external acceptance suite that
+also checks frozen file hashes. Reproduce the retained checks with:
 
 ```sh
-nix-shell --pure --run 'python3 build/independent/verify.py'
+nix-shell --pure --run 'python3 -m unittest discover -s tests -p test_evaluation.py -v'
 ```
 
 | Check | Result |

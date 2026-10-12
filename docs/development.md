@@ -75,3 +75,27 @@ redirection encountered sandbox store restrictions; invoking the documented
 command directly succeeded. This is an environment constraint, not a language
 change. The compiler, runtime, standard library and their tests are now frozen
 for the fresh-context ninth-program evaluation.
+
+## Phase 7 and final delivery review
+
+A fresh subagent received only the prime task and public language/API/testing
+documents as learning resources. It committed its spec and 13 tests before
+implementation, recorded E100 for the undefined is_prime routine, then passed
+all 13 tests and exact program output without changing any frozen component.
+The evaluator's report describes the shared-filesystem independence limitation.
+A retained external acceptance module verifies the output, native counts and
+all frozen hashes; the original evaluator driver stays in ignored build output.
+
+A clean-checkout verification exposed an external Python fixture setup bug:
+the driver-regression class assumed build already existed. Its setup now
+creates that directory explicitly. This does not alter the native framework,
+compiler, language or library. The baseline 107 tests then passed in a clean
+checkout under Nix. The final suite includes three ninth-program checks.
+
+README build/run/test commands and both introductory FoxLang snippets were
+executed under the pinned pure shell. Final delivery exports the entire commit
+history as foxlang-history.bundle and verifies a normal clone. No generated
+executable, generated C or cache is tracked; compiler/runtime.c is authored
+runtime source. Every development commit includes the requested Assisted-by
+trailer. The only repository-environment limitation is the supplied read-only,
+empty root .git; the bundle provides a recoverable conventional repository.

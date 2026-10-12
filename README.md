@@ -43,6 +43,9 @@ python3 -m unittest discover -s tests -v
 python3 fox.py test tests/native/language.fox
 printf '%s\n' '-12' | python3 fox.py test tests/native/stdlib.fox
 python3 fox.py test examples/05-gcd/main.fox
+python3 fox.py build examples/09-primes/primes.fox -o build/primes
+./build/primes
+python3 fox.py test examples/09-primes/primes.fox
 ```
 
 The full external suite compiles and runs every initial example, tests invalid
@@ -88,6 +91,7 @@ in the one named file. See [testing](docs/testing.md) for details.
 | `compiler/` | Lexer/parser, semantic checker, C emitter and C runtime |
 | `stdlib/` | Reusable assertion wrappers written in FoxLang |
 | `examples/01-hello` through `08-square` | Independent specs, FoxLang source, exact outputs and input fixtures |
+| `examples/09-primes/` | Fresh-agent prime specification, prewritten native tests and implementation |
 | `tests/invalid/` | Invalid sources and expected diagnostic identifiers/locations |
 | `tests/native/` | Native language and standard-library tests |
 | `tests/framework/` | Deliberately failing and empty runner fixtures |
@@ -98,6 +102,13 @@ in the one named file. See [testing](docs/testing.md) for details.
 The initial examples are Hello World, Basic Arithmetic, Number Classification,
 FizzBuzz, Greatest Common Divisor, recursive Fibonacci, Array Statistics and
 Square Calculator. Each directory has a `spec.md` and exact `expected.txt`.
+
+The ninth program prints primes from 2 through 30. A fresh agent wrote its
+specification and 13 tests before its solution, using the frozen documentation
+and compiler without language changes. See the [independent evaluation](docs/evaluation.md)
+and [final technical report](docs/report.md). Verification passes 110 external
+tests and 37 normal native tests, with zero unexpected failures. All nine
+program outputs pass exact-byte comparisons in the pinned Nix shell.
 
 ## Limitations and next experiment
 
