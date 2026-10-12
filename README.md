@@ -123,3 +123,9 @@ Next, specify a small deterministic grid simulation before extending the
 language. Let that program establish whether mutable collections, structured
 values or recoverable input errors are actually needed. Measure correctness
 and development friction before introducing performance work.
+
+## License
+
+FoxLang is licensed under the GNU General Public License, version 3 or
+(at your option) any later version (`GPL-3.0-or-later`). See [LICENSE](LICENSE)
+for the full license text.
