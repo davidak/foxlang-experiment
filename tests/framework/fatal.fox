@@ -1,0 +1,7 @@
+test "fatal arithmetic" {
+    print(1 / 0);
+}
+
+test "never reached" {
+    fail("runtime faults stop the suite");
+}

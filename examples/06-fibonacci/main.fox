@@ -12,3 +12,12 @@ fn main() {
         n = n + 1;
     }
 }
+
+test "recursive fibonacci base cases and sequence" {
+    let expected = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34];
+    var n = 0;
+    while n < len(expected) {
+        assert_eq(fibonacci(n), expected[n]);
+        n = n + 1;
+    }
+}

@@ -1,0 +1,203 @@
+// Native feature coverage; rejection and fatal errors live in the external suite.
+fn identity(n: int) -> int {
+    return n;
+}
+
+fn choose(flag: bool, a: text, b: text) -> text {
+    if flag {
+        return a;
+    } else {
+        return b;
+    }
+}
+
+fn odd(n: int) -> bool {
+    if n == 0 {
+        return false;
+    }
+    return even(n - 1);
+}
+
+fn even(n: int) -> bool {
+    if n == 0 {
+        return true;
+    }
+    return odd(n - 1);
+}
+
+fn early(value: bool) {
+    if value {
+        return;
+    }
+    assert_true(!value);
+}
+
+fn nested(n: int) -> int {
+    if n < 0 {
+        return -1;
+    } else if n == 0 {
+        return 0;
+    } else if n == 1 {
+        return 1;
+    } else {
+        return 2;
+    }
+}
+
+test "integer boundaries" {
+    assert_eq(9223372036854775807, 9223372036854775806 + 1);
+    assert_eq(-9223372036854775808, -9223372036854775807 - 1);
+    assert_eq(-9223372036854775808 / 1, -9223372036854775808);
+    assert_eq(-9223372036854775808 % 1, 0);
+    assert_eq(00012, 12);
+    assert_eq(-0, 0);
+}
+
+test "arithmetic and precedence" {
+    assert_eq(2 + 3 * 4, 14);
+    assert_eq((2 + 3) * 4, 20);
+    assert_eq(20 - 5 - 3, 12);
+    assert_eq(20 / 2 / 2, 5);
+    assert_eq(17 % 5, 2);
+    assert_eq(- -7, 7);
+}
+
+test "signed division and remainder" {
+    assert_eq(-7 / 3, -2);
+    assert_eq(7 / -3, -2);
+    assert_eq(-7 / -3, 2);
+    assert_eq(-7 % 3, -1);
+    assert_eq(7 % -3, 1);
+    assert_eq(-7 % -3, -1);
+}
+
+test "comparison operators" {
+    assert_true(1 < 2);
+    assert_true(2 > 1);
+    assert_true(2 <= 2);
+    assert_true(2 >= 2);
+    assert_true(2 == 2);
+    assert_true(2 != 3);
+    assert_false(2 < 2);
+    assert_false(2 > 2);
+    assert_false(2 <= 1);
+    assert_false(1 >= 2);
+    assert_false(2 == 3);
+    assert_false(2 != 2);
+}
+
+test "boolean operators and precedence" {
+    assert_true(!false);
+    assert_true(true && true);
+    assert_false(false || false);
+    assert_true(false || true && true);
+    assert_false((false || true) && false);
+    assert_true(true == !false);
+    assert_true(true != false);
+}
+
+test "short circuit skips unsafe right operand" {
+    assert_false(false && 1 / 0 == 0);
+    assert_true(true || [1][9] == 0);
+}
+
+test "local mutation and lexical blocks" {
+    let initial = 3;
+    var value = initial;
+    if true {
+        let delta = 4;
+        value = value + delta;
+    }
+    if true {
+        let delta = 2;
+        value = value * delta;
+    }
+    assert_eq(value, 14);
+    assert_eq(initial, 3);
+}
+
+test "while reevaluates and may execute zero times" {
+    var i = 0;
+    var sum = 0;
+    while i < 5 {
+        sum = sum + i;
+        i = i + 1;
+    }
+    while false {
+        fail("zero-iteration loop entered");
+    }
+    assert_eq(i, 5);
+    assert_eq(sum, 10);
+}
+
+test "nested loops" {
+    var i = 0;
+    var count = 0;
+    while i < 3 {
+        var j = 0;
+        while j < 2 {
+            count = count + 1;
+            j = j + 1;
+        }
+        i = i + 1;
+    }
+    assert_eq(count, 6);
+}
+
+test "functions return scalars and accept expressions" {
+    assert_eq(identity(identity(3) + 4), 7);
+    assert_eq(choose(true, "fox", "wolf"), "fox");
+    assert_eq(choose(false, "fox", "wolf"), "wolf");
+    early(true);
+    early(false);
+}
+
+test "mutual recursion and forward calls" {
+    assert_true(even(0));
+    assert_true(even(10));
+    assert_false(even(9));
+    assert_true(odd(9));
+    assert_false(odd(0));
+}
+
+test "else if chains and return paths" {
+    assert_eq(nested(-2), -1);
+    assert_eq(nested(0), 0);
+    assert_eq(nested(1), 1);
+    assert_eq(nested(20), 2);
+}
+
+test "array literals length and boundary indices" {
+    let values = [identity(3), -2, 7];
+    assert_eq(len(values), 3);
+    assert_eq(values[0], 3);
+    assert_eq(values[len(values) - 1], 7);
+    assert_eq([9][0], 9);
+    assert_eq(len([1, 2]), 2);
+}
+
+test "array traversal" {
+    let values = [-3, 0, 5, -3];
+    var sum = 0;
+    var i = 0;
+    while i < len(values) {
+        sum = sum + values[i];
+        i = i + 1;
+    }
+    assert_eq(sum, -1);
+}
+
+test "text escapes unicode and equality" {
+    assert_eq("", "");
+    assert_eq("héllo 🦊", choose(true, "héllo 🦊", ""));
+    assert_ne("fox", "Fox");
+    assert_true("ab" == "ab");
+    assert_true("ab" != "abc");
+    assert_eq("\n\r\t\"\\", "\n\r\t\"\\");
+}
+
+test "C identifiers remain valid FoxLang names" {
+    let switch = 4;
+    let int64_t = 2;
+    assert_eq(switch + int64_t, 6);
+}

@@ -1,0 +1,30 @@
+test "read_int representative signed input" {
+    assert_eq(read_int(), -12);
+}
+
+test "print every scalar type and empty text" {
+    print(9223372036854775807);
+    print(-9223372036854775808);
+    print(true);
+    print(false);
+    print("fox 🦊");
+    print("");
+}
+
+test "len single and multiple elements" {
+    assert_eq(len([1]), 1);
+    assert_eq(len([1, 2, 3]), 3);
+}
+
+test "assertion library scalar overloads" {
+    assert_true(true);
+    assert_false(false);
+    assert(true, "message");
+    assert_eq(3, 3);
+    assert_eq(true, true);
+    assert_eq("fox", "fox");
+    assert_ne(3, 4);
+    assert_ne(true, false);
+    assert_ne("fox", "wolf");
+    // fail and all negative assertion paths are tested by failing fixtures.
+}

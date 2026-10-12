@@ -1,0 +1,52 @@
+fn main() {
+    print("normal main only");
+}
+
+test "first pass" {
+    assert_true(true);
+}
+
+test "true failure" {
+    assert_true(false);
+    print("UNREACHABLE");
+}
+
+test "false failure" {
+    assert_false(true);
+}
+
+test "equal int failure" {
+    assert_eq(1, 2);
+}
+
+test "unequal int failure" {
+    assert_ne(3, 3);
+}
+
+test "equal bool failure" {
+    assert_eq(true, false);
+}
+
+test "unequal bool failure" {
+    assert_ne(true, true);
+}
+
+test "equal text failure" {
+    assert_eq("fox", "wolf");
+}
+
+test "unequal text failure" {
+    assert_ne("fox", "fox");
+}
+
+test "custom failure" {
+    assert(false, "custom reason");
+}
+
+test "explicit failure" {
+    fail("intentional reason");
+}
+
+test "last pass" {
+    assert_ne(1, 2);
+}
