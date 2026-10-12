@@ -34,3 +34,14 @@ result functions return on all paths; conditions are bool; collection elements
 are int; square delegates strict parsing and arithmetic safety to the runtime.
 No language additions were needed. Examples are committed as executable
 requirements, with no compiler yet present.
+
+## Compiler milestones 1–6
+
+The front end was built as independent lexical, parsing and semantic passes;
+C emission was enabled incrementally. Verified and committed: Hello World;
+checked arithmetic; sign/parity decisions and void function calls; mutation,
+while and short circuit; result-bearing functions and GCD. Each milestone
+reran every preceding example with byte-for-byte output comparison.
+Recursive Fibonacci then passed without compiler changes: function prototypes
+and general call emission already support recursion. All six examples pass.
+Native builds use cached Nix GCC 15.2.0; no ad-hoc compiler installation.
