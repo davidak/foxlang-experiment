@@ -1,0 +1,2 @@
+test "bad" { return; }
+fn main() {}

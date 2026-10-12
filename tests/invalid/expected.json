@@ -1,0 +1,242 @@
+{
+  "syntax": {
+    "code": "E002",
+    "line": 1,
+    "column": 22,
+    "hint": true
+  },
+  "unknown": {
+    "code": "E100",
+    "line": 1,
+    "column": 19,
+    "hint": true
+  },
+  "operation": {
+    "code": "E102",
+    "line": 1,
+    "column": 24,
+    "hint": false
+  },
+  "arity": {
+    "code": "E103",
+    "line": 2,
+    "column": 13,
+    "hint": false
+  },
+  "argument_type": {
+    "code": "E102",
+    "line": 2,
+    "column": 13,
+    "hint": false
+  },
+  "changing_type": {
+    "code": "E102",
+    "line": 1,
+    "column": 24,
+    "hint": false
+  },
+  "return_type": {
+    "code": "E102",
+    "line": 1,
+    "column": 13,
+    "hint": false
+  },
+  "missing_return": {
+    "code": "E105",
+    "line": 1,
+    "column": 4,
+    "hint": true
+  },
+  "test_return": {
+    "code": "E105",
+    "line": 1,
+    "column": 14,
+    "hint": false
+  },
+  "unreachable": {
+    "code": "E105",
+    "line": 1,
+    "column": 21,
+    "hint": false
+  },
+  "condition": {
+    "code": "E102",
+    "line": 1,
+    "column": 16,
+    "hint": false
+  },
+  "index_type": {
+    "code": "E106",
+    "line": 1,
+    "column": 33,
+    "hint": false
+  },
+  "not_array": {
+    "code": "E106",
+    "line": 1,
+    "column": 20,
+    "hint": false
+  },
+  "array_element": {
+    "code": "E106",
+    "line": 1,
+    "column": 25,
+    "hint": false
+  },
+  "empty_array": {
+    "code": "E106",
+    "line": 1,
+    "column": 21,
+    "hint": true
+  },
+  "array_alias": {
+    "code": "E106",
+    "line": 1,
+    "column": 30,
+    "hint": false
+  },
+  "mutable_array": {
+    "code": "E106",
+    "line": 1,
+    "column": 17,
+    "hint": false
+  },
+  "duplicate_local": {
+    "code": "E101",
+    "line": 1,
+    "column": 28,
+    "hint": true
+  },
+  "shadow": {
+    "code": "E101",
+    "line": 1,
+    "column": 38,
+    "hint": true
+  },
+  "duplicate_function": {
+    "code": "E101",
+    "line": 2,
+    "column": 4,
+    "hint": false
+  },
+  "duplicate_parameter": {
+    "code": "E101",
+    "line": 1,
+    "column": 14,
+    "hint": true
+  },
+  "duplicate_test": {
+    "code": "E101",
+    "line": 3,
+    "column": 6,
+    "hint": false
+  },
+  "immutable": {
+    "code": "E104",
+    "line": 1,
+    "column": 24,
+    "hint": true
+  },
+  "out_of_scope": {
+    "code": "E100",
+    "line": 1,
+    "column": 42,
+    "hint": true
+  },
+  "literal_range": {
+    "code": "E108",
+    "line": 1,
+    "column": 19,
+    "hint": false
+  },
+  "bad_escape": {
+    "code": "E001",
+    "line": 1,
+    "column": 19,
+    "hint": false
+  },
+  "bad_character": {
+    "code": "E001",
+    "line": 1,
+    "column": 13,
+    "hint": false
+  },
+  "len_scalar": {
+    "code": "E106",
+    "line": 1,
+    "column": 19,
+    "hint": false
+  },
+  "array_equality": {
+    "code": "E102",
+    "line": 1,
+    "column": 23,
+    "hint": false
+  },
+  "void_binding": {
+    "code": "E102",
+    "line": 1,
+    "column": 17,
+    "hint": false
+  },
+  "main_parameters": {
+    "code": "E107",
+    "line": 1,
+    "column": 4,
+    "hint": true
+  },
+  "bare_expression": {
+    "code": "E105",
+    "line": 1,
+    "column": 13,
+    "hint": false
+  },
+  "unknown_function": {
+    "code": "E100",
+    "line": 1,
+    "column": 13,
+    "hint": true
+  },
+  "keyword_binding": {
+    "code": "E002",
+    "line": 1,
+    "column": 17,
+    "hint": true
+  },
+  "builtin_collision": {
+    "code": "E101",
+    "line": 1,
+    "column": 4,
+    "hint": false
+  },
+  "local_function_collision": {
+    "code": "E101",
+    "line": 2,
+    "column": 17,
+    "hint": true
+  },
+  "nonbool_logic": {
+    "code": "E102",
+    "line": 1,
+    "column": 24,
+    "hint": false
+  },
+  "chained_comparison": {
+    "code": "E102",
+    "line": 1,
+    "column": 25,
+    "hint": false
+  },
+  "nested_array": {
+    "code": "E106",
+    "line": 1,
+    "column": 22,
+    "hint": false
+  },
+  "trailing_comma": {
+    "code": "E002",
+    "line": 1,
+    "column": 22,
+    "hint": false
+  }
+}
