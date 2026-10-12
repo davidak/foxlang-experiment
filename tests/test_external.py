@@ -201,6 +201,10 @@ for name, expression, code in [
 
 # Additional regressions found during the pre-evaluation review.
 class DriverErrors(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        (ROOT/'build').mkdir(parents=True, exist_ok=True)
+
     def test_output_directory_diagnostic(self):
         ran = subprocess.run([sys.executable, str(ROOT/'fox.py'), 'build', str(ROOT/'examples/01-hello/main.fox'), '-o', str(ROOT/'build')], capture_output=True)
         self.assertEqual(ran.returncode, 1)
